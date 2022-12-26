@@ -9,14 +9,14 @@ CREATE TABLE students (
 DROP TABLE IF EXISTS groups;
 CREATE TABLE groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    groups VARCHAR(255) NOT NULL,
+    groups VARCHAR(255) NOT NULL
 );
 
 -- Table: teachers
 DROP TABLE IF EXISTS teachers;
 CREATE TABLE teachers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    teachers_name VARCHAR(255) NOT NULL,
+    teachers_name VARCHAR(255) NOT NULL
 );
 
 -- Table: subjects
