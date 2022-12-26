@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def create_db():
     # читаем файл со скриптом для создания БД
     with open('salary.sql', 'r') as f:
