@@ -28,19 +28,19 @@ def generate_fake_data(number_students, number_groups, nuber_teachers, number_su
     for _ in range(number_groups):
         fake_groups.append(fake_data.job())
 
-    # Создаем number_subjects набор предметов
-    for _ in range(number_subjects):
-        fake_subjects.append(fake_data.job())
-
     # Создаем список преподавателей в количестве fake_teachers
     for _ in range(nuber_teachers):
         fake_teachers.append(fake_data.name())
+
+        # Создаем number_subjects набор предметов
+        for _ in range(number_subjects):
+            fake_subjects.append(fake_data.job())
 
     # Создаем список оценок fake_grades
     for _ in range(grades):
         fake_grades.append(fake_data.random_int(min=1, max=12))
 
-    return fake_students, fake_groups, fake_subjects
+    return fake_students, fake_groups, fake_teachers, fake_subjects, fake_grades
 
 
 def prepare_data(students, groups, teachers, subjects, grades):
