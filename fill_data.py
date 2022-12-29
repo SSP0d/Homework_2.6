@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, date
 from faker import Faker
 from faker.providers import BaseProvider
 from random import randint, choice
@@ -6,12 +6,12 @@ import sqlite3
 
 NUMBER_STUDENTS = 30
 NUMBER_GROUPS = 3
-NUMBER_SUBJECTS = 8
 NUMBER_TEACHERS = 5
+NUMBER_SUBJECTS = 8
 GRADES = 20
 
 
-def generate_fake_data(number_students, number_groups, number_subjects, nuber_teachers, grades) -> tuple():
+def generate_fake_data(number_students, number_groups, nuber_teachers, number_subjects, grades) -> tuple():
     fake_students = []  # здесь будем хранить студентов
     fake_groups = []  # здесь будем хранить группы
     fake_subjects = []  # здесь будем хранить предметы
@@ -32,7 +32,7 @@ def generate_fake_data(number_students, number_groups, number_subjects, nuber_te
     for _ in range(number_subjects):
         fake_subjects.append(fake_data.job())
 
-    # Создаем список преподавателей количестве fake_teachers
+    # Создаем список преподавателей в количестве fake_teachers
     for _ in range(nuber_teachers):
         fake_teachers.append(fake_data.name())
 
@@ -43,7 +43,7 @@ def generate_fake_data(number_students, number_groups, number_subjects, nuber_te
     return fake_students, fake_groups, fake_subjects
 
 
-def prepare_data(students, groups, subjects, teachers, grades) -> tuple():
+def prepare_data(students, groups, teachers, subjects, grades):
     for_students = []
     # подготавливаем список кортежей имен студентов
     for student in students:
@@ -54,79 +54,74 @@ def prepare_data(students, groups, subjects, teachers, grades) -> tuple():
     for group in groups:
         for_groups.append(group, )
 
+    for_teachers = []
+    # подготавливаем список кортежей преподавателей
+    for teacher in teachers:
+        for_teachers.append(teacher, )
+
     for_subjects = []
     # подготавливаем список кортежей предметов
     for subject in subjects:
-        for_subjects.append(subject, )
+        for_subjects.append(subject, choice(teachers))
+
+    for_grades = []
+    # подготавливаем список кортежей оценок студентов
+    for month in range(1, 13):
+        grade_data: date = datetime(2022, month, randint(1, 28)).date()
+        for student in students:
+            for_grades.append(student, choice(grades), grade_data)
+
+    return for_students, for_groups, for_teachers, for_subjects, for_grades
 
 
-    for emp in groups:
-        '''
-        Для записей в таблицу сотрудников нам надо добавить должность и id компании. Компаний у нас было по умолчанию
-        NUMBER_COMPANIES, при создании таблицы companies для поля id мы указывали INTEGER AUTOINCREMENT - потому каждая
-        запись будет получать последовательное число увеличенное на 1, начиная с 1. Потому компанию выбираем случайно
-        в этом диапазоне
-        '''
-        for_employees.append((emp, choice(teachers), randint(1, NUMBER_STUDENTS)))
-
-    '''
-    Похожие операции выполним и для таблицы payments выплаты зарплат. Примем, что выплата зарплаты во всех компаниях
-    выполнялась с 10 по 20 числа каждого месяца. Вилку зарплат будем генерировать в диапазоне от 1000 до 10000 у.е.
-    для каждого месяца, и каждого сотрудника.
-    '''
-    for_payments = []
-
-    for month in range(1, 12 + 1):
-        # Выполняем цикл по месяцам'''
-        payment_date = datetime(2021, month, randint(10, 20)).date()
-        for emp in range(1, NUMBER_GROUPS + 1):
-            # Выполняем цикл по количеству сотрудников
-            for_payments.append((emp, payment_date, randint(1000, 10000)))
-
-    return for_students, for_employees, for_payments
-
-
-def insert_data_to_db(companies, employees, payments) -> None:
+def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
     # Создадим соединение с нашей БД и получим объект курсора для манипуляций с данными
 
     with sqlite3.connect('salary.db') as con:
 
         cur = con.cursor()
 
-        '''Заполняем таблицу компаний. И создаем скрипт для вставки, где переменные, которые будем вставлять отметим
+        '''Заполняем таблицу студентов. И создаем скрипт для вставки, где переменные, которые будем вставлять отметим
         знаком заполнителя (?) '''
 
-        sql_to_companies = """INSERT INTO companies(company_name)
+        sql_to_students = """INSERT INTO students(students_name)
                                VALUES (?)"""
 
         '''Для вставки сразу всех данных воспользуемся методом executemany курсора. Первым параметром будет текст
         скрипта, а вторым данные (список кортежей).'''
 
-        cur.executemany(sql_to_companies, companies)
+        cur.executemany(sql_to_students, students)
 
-        # Далее вставляем данные о сотрудниках. Напишем для него скрипт и укажем переменные
+        # Вставляем данные о группах.
+        sql_to_groups = """INSERT INTO groups(groups_name)
+                            VALUES (?)"""
 
-        sql_to_employees = """INSERT INTO employees(employee, post, company_id)
-                               VALUES (?, ?, ?)"""
+        cur.executemany(sql_to_groups, groups)
+
+        # Вставляем данные о преподавателях.
+        sql_to_teachers = """INSERT INTO teachers(teachers_name)
+                                VALUES (?)"""
+
+        cur.executemany(sql_to_teachers, teachers)
+
+        # Вставляем данные о предметах.
+        sql_to_subjects = """INSERT INTO subjects(subject, teacher)
+                                VALUES (?, ?)"""
 
         # Данные были подготовлены заранее, потому просто передаем их в функцию
+        cur.executemany(sql_to_subjects, subjects)
 
-        cur.executemany(sql_to_employees, employees)
-
-        # Последней заполняем таблицу с зарплатами
-
-        sql_to_payments = """INSERT INTO payments(employee_id, date_of, total)
-                              VALUES (?, ?, ?)"""
-
-        # Вставляем данные о зарплатах
-
-        cur.executemany(sql_to_payments, payments)
+        # И добавляем данные о оценках
+        sql_to_grades = """INSERT INTO grades(students_name, grade, date)
+                            VALUES (?, ?, ?)"""
+        cur.executemany(sql_to_grades, grades)
 
         # Фиксируем наши изменения в БД
-
         con.commit()
 
 
 if __name__ == "__main__":
-    companies, employees, posts = prepare_data(*generate_fake_data(NUMBER_STUDENTS, NUMBER_GROUPS, NUMBER_POST))
-    insert_data_to_db(companies, employees, posts)
+    students, groups, teachers, subjects, grades = prepare_data(*generate_fake_data(NUMBER_STUDENTS, NUMBER_GROUPS,
+                                                                                    NUMBER_TEACHERS,NUMBER_SUBJECTS,
+                                                                                    GRADES))
+    insert_data_to_db(tudents, groups, teachers, subjects, grades)
