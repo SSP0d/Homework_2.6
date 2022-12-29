@@ -62,14 +62,14 @@ def prepare_data(students, groups, teachers, subjects, grades):
     for_subjects = []
     # подготавливаем список кортежей предметов
     for subject in subjects:
-        for_subjects.append(subject, choice(teachers))
+        for_subjects.append((subject, choice(teachers)))
 
     for_grades = []
     # подготавливаем список кортежей оценок студентов
     for month in range(1, 13):
         grade_data: date = datetime(2022, month, randint(1, 28)).date()
         for student in students:
-            for_grades.append(student, choice(grades), grade_data)
+            for_grades.append((student, choice(grades), grade_data))
 
     return for_students, for_groups, for_teachers, for_subjects, for_grades
 
@@ -124,4 +124,4 @@ if __name__ == "__main__":
     students, groups, teachers, subjects, grades = prepare_data(*generate_fake_data(NUMBER_STUDENTS, NUMBER_GROUPS,
                                                                                     NUMBER_TEACHERS,NUMBER_SUBJECTS,
                                                                                     GRADES))
-    insert_data_to_db(tudents, groups, teachers, subjects, grades)
+    insert_data_to_db(students, groups, teachers, subjects, grades)
