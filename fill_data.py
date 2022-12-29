@@ -85,7 +85,7 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
         знаком заполнителя (?) '''
 
         sql_to_students = """
-        INSERT INTO students(students_name)
+        INSERT INTO students(student_name)
         VALUES (?)
         """
 
@@ -96,7 +96,7 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         # Вставляем данные о группах.
         sql_to_groups = """
-        INSERT INTO groups(groups_name)
+        INSERT INTO groups(groups)
         VALUES (?)
         """
 
@@ -112,7 +112,7 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         # Вставляем данные о предметах.
         sql_to_subjects = """
-        INSERT INTO subjects(subject, teacher)
+        INSERT INTO subjects(subject, teachers_id)
         VALUES (?, ?)
         """
 
@@ -121,11 +121,11 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         # И добавляем данные о оценках
         sql_to_grades = """
-        INSERT INTO grades(students_name, grade, date)
-        VALUES (?, ?, ?)
+        INSERT INTO grades(student_id, grades, subjects_id, date_of)
+        VALUES (?, ?, ?, ?)
         """
 
-        cur.executemany(sql_to_grades, grades)
+        cur.executemany(sql_to_grades, students, grades, subjects, grades)
 
         # Фиксируем наши изменения в БД
         con.commit()
