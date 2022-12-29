@@ -84,8 +84,10 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
         '''Заполняем таблицу студентов. И создаем скрипт для вставки, где переменные, которые будем вставлять отметим
         знаком заполнителя (?) '''
 
-        sql_to_students = """INSERT INTO students(students_name)
-                               VALUES (?)"""
+        sql_to_students = """
+        INSERT INTO students(students_name)
+        VALUES (?)
+        """
 
         '''Для вставки сразу всех данных воспользуемся методом executemany курсора. Первым параметром будет текст
         скрипта, а вторым данные (список кортежей).'''
@@ -93,27 +95,36 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
         cur.executemany(sql_to_students, students)
 
         # Вставляем данные о группах.
-        sql_to_groups = """INSERT INTO groups(groups_name)
-                            VALUES (?)"""
+        sql_to_groups = """
+        INSERT INTO groups(groups_name)
+        VALUES (?)
+        """
 
         cur.executemany(sql_to_groups, groups)
 
         # Вставляем данные о преподавателях.
-        sql_to_teachers = """INSERT INTO teachers(teachers_name)
-                                VALUES (?)"""
+        sql_to_teachers = """
+        INSERT INTO teachers(teachers_name)
+        VALUES (?)
+        """
 
         cur.executemany(sql_to_teachers, teachers)
 
         # Вставляем данные о предметах.
-        sql_to_subjects = """INSERT INTO subjects(subject, teacher)
-                                VALUES (?, ?)"""
+        sql_to_subjects = """
+        INSERT INTO subjects(subject, teacher)
+        VALUES (?, ?)
+        """
 
         # Данные были подготовлены заранее, потому просто передаем их в функцию
         cur.executemany(sql_to_subjects, subjects)
 
         # И добавляем данные о оценках
-        sql_to_grades = """INSERT INTO grades(students_name, grade, date)
-                            VALUES (?, ?, ?)"""
+        sql_to_grades = """
+        INSERT INTO grades(students_name, grade, date)
+        VALUES (?, ?, ?)
+        """
+
         cur.executemany(sql_to_grades, grades)
 
         # Фиксируем наши изменения в БД
