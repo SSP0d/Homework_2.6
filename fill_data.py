@@ -1,14 +1,13 @@
 from datetime import datetime, timedelta, date
 from faker import Faker
-from faker.providers import BaseProvider
 from random import randint, choice
 import sqlite3
 
-NUMBER_STUDENTS = 30
-NUMBER_GROUPS = 3
-NUMBER_TEACHERS = 5
-NUMBER_SUBJECTS = 8
-GRADES = 20
+NUMBER_STUDENTS: int = 30
+NUMBER_GROUPS: int = 3
+NUMBER_TEACHERS: int = 5
+NUMBER_SUBJECTS: int = 8
+GRADES: int = 20
 
 
 def generate_fake_data(number_students, number_groups, nuber_teachers, number_subjects, grades) -> tuple():
@@ -32,9 +31,9 @@ def generate_fake_data(number_students, number_groups, nuber_teachers, number_su
     for _ in range(nuber_teachers):
         fake_teachers.append(fake_data.name())
 
-        # Создаем number_subjects набор предметов
-        for _ in range(number_subjects):
-            fake_subjects.append(fake_data.job())
+    # Создаем number_subjects набор предметов
+    for _ in range(number_subjects):
+        fake_subjects.append(fake_data.job())
 
     # Создаем список оценок fake_grades
     for _ in range(grades):
@@ -81,16 +80,10 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         cur = con.cursor()
 
-        '''Заполняем таблицу студентов. И создаем скрипт для вставки, где переменные, которые будем вставлять отметим
-        знаком заполнителя (?) '''
-
         sql_to_students = """
         INSERT INTO students(student_name)
         VALUES (?)
         """
-
-        '''Для вставки сразу всех данных воспользуемся методом executemany курсора. Первым параметром будет текст
-        скрипта, а вторым данные (список кортежей).'''
 
         cur.executemany(sql_to_students, students)
 
