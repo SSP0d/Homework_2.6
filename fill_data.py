@@ -114,7 +114,7 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         # И добавляем данные о оценках
         sql_to_grades = """
-        INSERT INTO grades(student_id, grades, subjects_id, date_of)
+        INSERT INTO grades(grades, subjects_id, date_of, student_id)
         VALUES (?, ?, ?, ?)
         """
 
