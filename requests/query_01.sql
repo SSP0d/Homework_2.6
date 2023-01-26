@@ -1,16 +1,10 @@
 SELECT
-	students.student_name as student,
-	subjects.subjects,
-	ROUND(AVG(grades.grades, 2)) as average
-
-FROM students
-
-LEFT JOIN subjects s ON subjects.id = grades.subjects_id
-
-LEFT JOIN grades g ON students.id = grades.student_id
-
-WHERE grades.subjects_id = 1
-
-GROUP BY student
-ORDER BY average DESC
-LIMIT 1;
+    students.student_name as name,
+    ROUND(AVG(grades.grades),2) as grades
+FROM
+    students
+LEFT JOIN
+    grades ON students.id = grades.grades
+GROUP BY name
+ORDER BY grades DESC
+LIMIT 5;
