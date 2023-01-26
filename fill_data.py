@@ -69,7 +69,7 @@ def prepare_data(students: list, groups: list, teachers: list, subjects: list, g
         grade_data: date = datetime(2022, month, randint(1, 28)).date()
         for student in students:
             for_grades.append((student, choice(grades), grade_data))
-
+    print(for_grades)
     return for_students, for_groups, for_teachers, for_subjects, for_grades
 
 
