@@ -1,10 +1,10 @@
 SELECT
-    students.name,
-    ROUND(AVG(grades.grade),2) as average
+    students.student_name,
+    ROUND(AVG(grades.grades),2) as average
 FROM
     students
 LEFT JOIN
-    grade ON students.id = grades.student_id
-GROUP BY name
+    grades ON students.id = grades.student_id
+GROUP BY student_name
 ORDER BY average DESC
 LIMIT 5;
