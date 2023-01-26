@@ -68,8 +68,8 @@ def prepare_data(students: list, groups: list, teachers: list, subjects: list, g
     for month in range(1, 13):
         grade_data: date = datetime(2022, month, randint(1, 28)).date()
         for student in students:
-            for_grades.append((student, choice(grades), grade_data))
-    print(for_grades)
+            for_grades.append((choice(grades), choice(subjects), grade_data, student))
+    # print(for_grades)
     return for_students, for_groups, for_teachers, for_subjects, for_grades
 
 
@@ -117,7 +117,7 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
         INSERT INTO grades(grades, subjects_id, date_of, student_id)
         VALUES (?, ?, ?, ?)
         """
-
+        print(grades)
         cur.executemany(sql_to_grades, grades)
 
         # Фиксируем наши изменения в БД
