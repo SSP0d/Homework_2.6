@@ -9,7 +9,9 @@ CREATE TABLE students (
 DROP TABLE IF EXISTS groups;
 CREATE TABLE groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    groups VARCHAR(255) NOT NULL
+    groups VARCHAR(255) NOT NULL,
+    student_id INTEGER,
+    FOREIGN KEY (student_id) REFERENCES students(id)
 );
 
 -- Table: teachers

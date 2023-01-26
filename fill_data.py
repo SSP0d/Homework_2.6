@@ -50,8 +50,10 @@ def prepare_data(students: list, groups: list, teachers: list, subjects: list, g
 
     for_groups = []
     # подготавливаем список кортежей наименований групп
-    for group in groups:
-        for_groups.append((group, ))
+    student_id = 0
+    while len(for_groups) < NUMBER_STUDENTS:
+        student_id += 1
+        for_groups.append((choice(groups), student_id))
 
     for_teachers = []
     # подготавливаем список кортежей преподавателей
@@ -89,8 +91,8 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         # Вставляем данные о группах.
         sql_to_groups = """
-        INSERT INTO groups(groups)
-        VALUES (?)
+        INSERT INTO groups(groups, student_id)
+        VALUES (?, ?)
         """
 
         cur.executemany(sql_to_groups, groups)
@@ -117,7 +119,6 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
         INSERT INTO grades(grades, subjects_id, date_of, student_id)
         VALUES (?, ?, ?, ?)
         """
-        print(grades)
         cur.executemany(sql_to_grades, grades)
 
         # Фиксируем наши изменения в БД
