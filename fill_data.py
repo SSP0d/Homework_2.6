@@ -16,14 +16,14 @@ def generate_fake_data(number_students, number_groups, nuber_teachers, number_su
     fake_subjects = []  # здесь будем хранить предметы
     fake_teachers = [] # здесь будем хранить преподавателей
     fake_grades = [] # здесь будем хранить оценки
-    '''Возьмём три компании из faker и поместим их в нужную переменную'''
+
     fake_data = Faker()
 
     # Создадим список студентов в количестве number_students
     for _ in range(number_students):
         fake_students.append(fake_data.name())
 
-    # Сгенерируем теперь number_groups количество групп'''
+    # Сгенерируем теперь number_groups количество групп
     for _ in range(number_groups):
         fake_groups.append(fake_data.job())
 
@@ -42,21 +42,21 @@ def generate_fake_data(number_students, number_groups, nuber_teachers, number_su
     return fake_students, fake_groups, fake_teachers, fake_subjects, fake_grades
 
 
-def prepare_data(students, groups, teachers, subjects, grades):
+def prepare_data(students: list, groups: list, teachers: list, subjects: list, grades: list):
     for_students = []
     # подготавливаем список кортежей имен студентов
     for student in students:
-        for_students.append(student, )
+        for_students.append((student, ))
 
     for_groups = []
     # подготавливаем список кортежей наименований групп
     for group in groups:
-        for_groups.append(group, )
+        for_groups.append((group, ))
 
     for_teachers = []
     # подготавливаем список кортежей преподавателей
     for teacher in teachers:
-        for_teachers.append(teacher, )
+        for_teachers.append((teacher, ))
 
     for_subjects = []
     # подготавливаем список кортежей предметов
@@ -105,7 +105,7 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
 
         # Вставляем данные о предметах.
         sql_to_subjects = """
-        INSERT INTO subjects(subject, teachers_id)
+        INSERT INTO subjects(subjects, teachers_id)
         VALUES (?, ?)
         """
 
@@ -118,14 +118,14 @@ def insert_data_to_db(students, groups, teachers, subjects, grades) -> None:
         VALUES (?, ?, ?, ?)
         """
 
-        cur.executemany(sql_to_grades, students, grades, subjects, grades)
+        cur.executemany(sql_to_grades, grades)
 
         # Фиксируем наши изменения в БД
         con.commit()
 
 
 if __name__ == "__main__":
-    students, groups, teachers, subjects, grades = prepare_data(*generate_fake_data(NUMBER_STUDENTS, NUMBER_GROUPS,
-                                                                                    NUMBER_TEACHERS,NUMBER_SUBJECTS,
-                                                                                    GRADES))
+    students, groups, teachers, subjects, grades = prepare_data(
+        *generate_fake_data(NUMBER_STUDENTS, NUMBER_GROUPS, NUMBER_TEACHERS, NUMBER_SUBJECTS, GRADES)
+    )
     insert_data_to_db(students, groups, teachers, subjects, grades)
