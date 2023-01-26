@@ -4,15 +4,22 @@ import sqlite3
 # Знайти 5 студентів із найбільшим середнім балом з усіх предметів.
 sql = """
 SELECT
-    students.student_name,
-    ROUND(AVG(grades.grades),2) as average
-FROM
-    students
-LEFT JOIN
-    grades ON students.id = grades.grades
-GROUP BY student_name
+	students.student_name as student,
+	subjects.subjects,
+	ROUND(AVG(grades.grades, 2)) as average
+
+FROM students
+
+LEFT JOIN subjects s ON subjects.id = grades.subjects_id 
+	
+LEFT JOIN grades g ON students.id = grades.student_id
+	
+WHERE grades.subjects_id = 1
+
+GROUP BY student
 ORDER BY average DESC
-LIMIT 5;
+LIMIT 1;
+
 """
 
 
