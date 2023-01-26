@@ -1,8 +1,19 @@
 import sqlite3
 
 
-with open('request_01.sql', 'r') as query:
-    sql = query.read()
+# Знайти 5 студентів із найбільшим середнім балом з усіх предметів.
+sql = """
+SELECT
+    students.student_name,
+    ROUND(AVG(grades.grades),2) as average
+FROM
+    students
+LEFT JOIN
+    grades ON students.id = grades.grades
+GROUP BY student_name
+ORDER BY average DESC
+LIMIT 5;
+"""
 
 
 def execute_query(sql: str) -> list:
@@ -11,7 +22,5 @@ def execute_query(sql: str) -> list:
         cur.execute(sql)
         return cur.fetchall()
 
-
-# Знайти 5 студентів із найбільшим середнім балом з усіх предметів.
 
 print(execute_query(sql))
