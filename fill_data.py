@@ -61,14 +61,14 @@ def prepare_data(students: list, groups: list, teachers: list, subjects: list, g
     for_subjects = []
     # подготавливаем список кортежей предметов
     for subject in subjects:
-        for_subjects.append((subject, choice(teachers)))
+        for_subjects.append((subject, randint(1, NUMBER_TEACHERS)))
 
     for_grades = []
     # подготавливаем список кортежей оценок студентов
     for month in range(1, 13):
         grade_data: date = datetime(2022, month, randint(1, 28)).date()
         for student in students:
-            for_grades.append((choice(grades), choice(subjects), grade_data, student))
+            for_grades.append((randint(1, GRADES), randint(1, NUMBER_SUBJECTS), grade_data, student))
     # print(for_grades)
     return for_students, for_groups, for_teachers, for_subjects, for_grades
 
