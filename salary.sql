@@ -2,16 +2,18 @@
 DROP TABLE IF EXISTS students;
 CREATE TABLE students (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_name VARCHAR(255) NOT NULL
+    student_name VARCHAR(255) NOT NULL,
+    "group_id" INTEGER,
+    FOREIGN KEY ("group_id") REFERENCES "groups"(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 -- Table: groups
-DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS "groups";
 CREATE TABLE groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    groups VARCHAR(255) NOT NULL,
-    student_id INTEGER,
-    FOREIGN KEY (student_id) REFERENCES students(id)
+    "groups" VARCHAR(255) NOT NULL
 );
 
 -- Table: teachers
