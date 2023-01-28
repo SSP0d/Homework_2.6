@@ -1,7 +1,7 @@
-# Знайти які курси читає певний викладач.
+# Знайти середній бал, який ставить певний викладач зі своїх предметів.
 import sqlite3
 
-with open('query_05.sql', 'r') as query:
+with open('query_07.sql', 'r') as query:
     sql = query.read()
 
 
