@@ -1,5 +1,6 @@
 SELECT
 	s.student_name as name,
+	t.teachers_name as teacher,
 	sub.subjects
 FROM
 	grades g
